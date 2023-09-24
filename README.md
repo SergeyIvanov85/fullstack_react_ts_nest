@@ -1,0 +1,1 @@
+My first attempt to create a fullstack application using frameworks NestJS, ReactJs, PostgreSQL, TypeScript
