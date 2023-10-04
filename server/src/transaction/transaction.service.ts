@@ -58,11 +58,42 @@ export class TransactionService {
 		return transaction
 	}
 
-	update(id: number, updateTransactionDto: UpdateTransactionDto) {
-		return `This action updates a #${id} transaction`
+	async update(id: number, updateTransactionDto: UpdateTransactionDto) {
+		const transaction = await this.transactionRepository.findOne({
+			where: { id },
+		})
+
+		if (!transaction) throw new NotFoundException('Transaction not found!')
+
+		return await this.transactionRepository.update(id, updateTransactionDto)
 	}
 
-	remove(id: number) {
-		return `This action removes a #${id} transaction`
+	async remove(id: number) {
+		const transaction = await this.transactionRepository.findOne({
+			where: { id },
+		})
+
+		if (!transaction) throw new NotFoundException('Transaction not found!')
+
+		return await this.transactionRepository.delete(id)
+	}
+
+	async findAllWithPagination(id: number, page: number, limit: number) {
+		const transactions = this.transactionRepository.find({
+			where: {
+				user: { id },
+			},
+			relations: {
+				category: true,
+				user: true,
+			},
+			order: {
+				createdAt: 'DESC',
+			},
+			take: limit,
+			skip: (page - 1) * limit,
+		})
+
+		return transactions
 	}
 }
