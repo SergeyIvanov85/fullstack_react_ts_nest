@@ -1,7 +1,7 @@
 import {
-	BadRequestException,
-	Injectable,
-	NotFoundException,
+  BadRequestException,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
@@ -11,70 +11,70 @@ import { Category } from './entities/category.entity'
 
 @Injectable()
 export class CategoryService {
-	constructor(
-		@InjectRepository(Category)
-		private readonly categoryRepository: Repository<Category>,
-	) {}
+  constructor(
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
+  ) {}
 
-	async create(createCategoryDto: CreateCategoryDto, id: number) {
-		const isExist = await this.categoryRepository.findBy({
-			user: { id },
-			title: createCategoryDto.title,
-		})
+  async create(createCategoryDto: CreateCategoryDto, id: number) {
+    const isExist = await this.categoryRepository.findBy({
+      user: { id },
+      title: createCategoryDto.title,
+    })
 
-		if (isExist.length)
-			throw new BadRequestException('This category already exists!')
+    if (isExist.length)
+      throw new BadRequestException('This category already exists!')
 
-		const newCategory = {
-			title: createCategoryDto.title,
-			user: {
-				id,
-			},
-		}
+    const newCategory = {
+      title: createCategoryDto.title,
+      user: {
+        id,
+      },
+    }
 
-		return await this.categoryRepository.save(newCategory)
-	}
+    return await this.categoryRepository.save(newCategory)
+  }
 
-	async findAll(id: number) {
-		return await this.categoryRepository.find({
-			where: {
-				user: { id },
-			},
-			relations: {
-				transactions: true,
-			},
-		})
-	}
+  async findAll(id: number) {
+    return await this.categoryRepository.find({
+      where: {
+        user: { id },
+      },
+      relations: {
+        transactions: true,
+      },
+    })
+  }
 
-	async findOne(id: number) {
-		const category = await this.categoryRepository.findOne({
-			where: { id },
-			relations: {
-				user: true,
-				transactions: true,
-			},
-		})
+  async findOne(id: number) {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+      relations: {
+        user: true,
+        transactions: true,
+      },
+    })
 
-		if (!category) throw new NotFoundException('Category is not found')
+    if (!category) throw new NotFoundException('Category is not found')
 
-		return category
-	}
+    return category
+  }
 
-	async update(id: number, updateCategoryDto: UpdateCategoryDto) {
-		const category = await this.categoryRepository.findOne({
-			where: { id },
-		})
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+    })
 
-		if (!category) throw new NotFoundException('Category is not found')
-		return await this.categoryRepository.update(id, updateCategoryDto)
-	}
+    if (!category) throw new NotFoundException('Category is not found')
+    return await this.categoryRepository.update(id, updateCategoryDto)
+  }
 
-	async remove(id: number) {
-		const category = await this.categoryRepository.findOne({
-			where: { id },
-		})
-		if (!category) throw new NotFoundException('Category is not found')
+  async remove(id: number) {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+    })
+    if (!category) throw new NotFoundException('Category is not found')
 
-		return await this.categoryRepository.delete(id)
-	}
+    return await this.categoryRepository.delete(id)
+  }
 }

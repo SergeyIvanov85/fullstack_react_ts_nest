@@ -1,28 +1,28 @@
 import {
-	IsNotEmpty,
-	IsNumber,
-	IsOptional,
-	IsString,
-	MinLength,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MinLength,
 } from 'class-validator'
 import { Category } from 'src/category/entities/category.entity'
 import { User } from 'src/user/entities/user.entity'
 
 export class CreateTransactionDto {
-	@IsNotEmpty()
-	title: string
+  @IsNotEmpty()
+  title: string
 
-	@IsNotEmpty()
-	@IsNumber()
-	amount: number
+  @IsNotEmpty()
+  @IsNumber()
+  amount: number
 
-	@IsString()
-	@MinLength(6)
-	type: 'expence' | 'income'
+  @IsString()
+  @MinLength(6)
+  type: 'expence' | 'income'
 
-	@IsNotEmpty()
-	category: Category
+  @IsNotEmpty()
+  category: Category
 
-	@IsOptional()
-	user: User
+  @IsOptional()
+  user: User
 }
