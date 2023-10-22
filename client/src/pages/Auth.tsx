@@ -1,12 +1,18 @@
 import * as React from "react"
 import { FC, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
+import { setTokenToLocalStorage } from "../helpers/localstorage.helper"
 import { AuthService } from "../services/auth.service"
+import { useAppDispatch } from "../store/hooks"
+import { login } from "../store/user/userSlice"
 
 const Auth: FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false)
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
   const registrationHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
@@ -24,7 +30,15 @@ const Auth: FC = () => {
 
     const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
+      e.preventDefault()
+      const data = await AuthService.login({ email, password })
 
+      if (data) {
+        setTokenToLocalStorage('token', data.token)
+        dispatch(login(data))
+        toast.success('You logged in!')
+        navigate('/')
+      }
     } catch (err: any) {
       const error = err.response?.data.message
       toast.error(error.toString())
