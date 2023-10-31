@@ -2,7 +2,7 @@ import { FC } from "react"
 import { Form } from "react-router-dom"
 
 interface ICategoryModal {
-  type: 'post' | 'path'
+  type: 'post' | 'patch'
   id?: number
   setVisibleModal: (visible: boolean) => void
 }
@@ -19,11 +19,12 @@ export const CategoryModal: FC<ICategoryModal> = ({ type, id, setVisibleModal })
         <label htmlFor="title">
           <small>Category title</small>
           <input className="input w-full" type="text" name="title" placeholder="Title..."/>
+          <input type="hidden" name="id" value={id} />
         </label>
 
         <div className="flex items-center gap-2">
           <button className="btn btn-green" type="submit">
-            { type === 'path' ? 'Save': 'Create'}
+            { type === 'patch' ? 'Save': 'Create'}
           </button>
           <button onClick={() => setVisibleModal(false)} className="btn btn-red">Close</button>
         </div>

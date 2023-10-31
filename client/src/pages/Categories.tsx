@@ -17,9 +17,18 @@ export const categoriesAction = async ({request}: any) => {
       return null
     }
     case 'PATCH': {
+      const formData = await request.formData()
+      const category = {
+        id: formData.get('id'),
+        title: formData.get('title')
+      }
+      await instance.patch(`/categories/category/${category.id}`, category)
       return null
     }
     case 'DELETE': {
+      const formData = await request.formData()
+      const categoryId =  formData.get('id')
+      await instance.delete(`/categories/category/${categoryId}`)
       return null
     }
   }
@@ -32,6 +41,8 @@ export const categoryLoader = async () => {
 
 const Categories: FC = () => {
   const categories = useLoaderData() as ICategory[]
+  const [categoryId, setCategoryId] = useState<number>(0)
+  const [isEdit, setIsEdit] = useState<boolean>(false)
 
   const [visibleModal, setVisibleModal] = useState<boolean>(false)
   return (
@@ -43,7 +54,11 @@ const Categories: FC = () => {
                   <div key={idx} className='group py-2 px-4 rounded-lg bg-blue-600 flex items-center relative gap-2'>
           {category.title}
           <div className="absolute hidden px-3 left-0 top-0 bottom-0 right-0 rounded-lg bg-black/90 items-center justify-between group-hover:flex">
-            <button>
+            <button onClick={() => {
+              setCategoryId(category.id)
+              setVisibleModal(true)
+              setIsEdit(true)
+            }}>
               <AiFillEdit />
             </button>
             <Form 
@@ -51,7 +66,7 @@ const Categories: FC = () => {
             method='delete'
             action='/categories'
             >
-              <input type="hidden" value={category.id} />
+              <input type="hidden" name='id' value={category.id} />
               <button type='submit'>
                 <AiFillCloseCircle />
               </button>
@@ -68,6 +83,8 @@ const Categories: FC = () => {
     </div>
 
     {visibleModal && <CategoryModal type='post' setVisibleModal={setVisibleModal} /> }
+
+    {visibleModal && isEdit && <CategoryModal type='patch' id={categoryId} setVisibleModal={setVisibleModal} /> }
     </>
   )
 }
