@@ -2,7 +2,7 @@ import { FC } from "react"
 import { Form } from "react-router-dom"
 
 interface ICategoryModal {
-  type: 'post' | 'patcch'
+  type: 'post' | 'patch'
   id?: number
   setVisibleModal: (visible: boolean) => void
 }
